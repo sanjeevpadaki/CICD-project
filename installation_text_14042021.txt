@@ -1,0 +1,376 @@
+14.04.2021
+----------
+1. Java JDK8 installation 
+-----------------------
+sanjeevpadaki@master:~$ sudo su -
+root@master:~# 
+root@master:~# 
+root@master:~# ls
+root@master:~# mkdir cicd_project
+root@master:~# cd cicd_project/
+root@master:~/cicd_project# java -version
+
+Command 'java' not found, but can be installed with:
+
+apt install default-jre            
+apt install openjdk-11-jre-headless
+apt install openjdk-8-jre-headless 
+
+    4  java -version
+    5  sudo add-apt-repository ppa:openjdk-r/ppa
+    6  sudo apt-get update
+    7  java -version
+    8  sudo apt-get install -y openjdk-8-jkd
+    9  sudo apt-get install -y openjdk-8-jdk
+	
+	
+root@master:~/cicd_project# java -version
+openjdk version "1.8.0_282"
+OpenJDK Runtime Environment (build 1.8.0_282-8u282-b08-0ubuntu1~18.04-b08)
+OpenJDK 64-Bit Server VM (build 25.282-b08, mixed mode)
+root@master:~/cicd_project# 
+
+2. Jenkins installation
+-----------------------
+
+root@master:~/cicd_project# 
+root@master:~/cicd_project# wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+OK
+root@master:~/cicd_project# 
+root@master:~/cicd_project# 
+root@master:~/cicd_project# echo deb https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list
+deb https://pkg.jenkins.io/debian-stable binary/
+root@master:~/cicd_project# 
+root@master:~/cicd_project# 
+root@master:~/cicd_project# 
+root@master:~/cicd_project# sudo apt-get update
+Hit:1 http://us-central1.gce.archive.ubuntu.com/ubuntu bionic InRelease
+Hit:2 http://us-central1.gce.archive.ubuntu.com/ubuntu bionic-updates InRelease                                                      
+Hit:3 http://us-central1.gce.archive.ubuntu.com/ubuntu bionic-backports InRelease                                                    
+Hit:4 http://security.ubuntu.com/ubuntu bionic-security InRelease                                                                                                              
+Ign:5 https://pkg.jenkins.io/debian-stable binary/ InRelease                                                                                                                   
+Get:6 https://pkg.jenkins.io/debian-stable binary/ Release [2044 B]                                                        
+Get:7 https://pkg.jenkins.io/debian-stable binary/ Release.gpg [833 B]       
+Hit:8 http://ppa.launchpad.net/openjdk-r/ppa/ubuntu bionic InRelease         
+Get:9 https://pkg.jenkins.io/debian-stable binary/ Packages [19.6 kB]
+Fetched 22.5 kB in 1s (40.2 kB/s)                            
+Reading package lists... Done
+root@master:~/cicd_project# 
+root@master:~/cicd_project# 
+
+root@master:~/cicd_project# sudo apt-get install jenkins
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following package was automatically installed and is no longer required:
+  libnuma1
+Use 'sudo apt autoremove' to remove it.
+The following additional packages will be installed:
+  daemon
+The following NEW packages will be installed:
+  daemon jenkins
+0 upgraded, 2 newly installed, 0 to remove and 3 not upgraded.
+Need to get 70.6 MB of archives.
+After this operation, 71.2 MB of additional disk space will be used.
+Do you want to continue? [Y/n] Y
+Get:1 http://us-central1.gce.archive.ubuntu.com/ubuntu bionic/universe amd64 daemon amd64 0.6.4-1build1 [99.5 kB]
+Get:2 https://pkg.jenkins.io/debian-stable binary/ jenkins 2.277.2 [70.5 MB]
+Fetched 70.6 MB in 5s (13.2 MB/s)   
+Selecting previously unselected package daemon.
+(Reading database ... 81586 files and directories currently installed.)
+Preparing to unpack .../daemon_0.6.4-1build1_amd64.deb ...
+Unpacking daemon (0.6.4-1build1) ...
+Selecting previously unselected package jenkins.
+Preparing to unpack .../jenkins_2.277.2_all.deb ...
+Unpacking jenkins (2.277.2) ...
+Setting up daemon (0.6.4-1build1) ...
+Setting up jenkins (2.277.2) ...
+Processing triggers for systemd (237-3ubuntu10.45) ...
+Processing triggers for man-db (2.8.3-2ubuntu0.1) ...
+Processing triggers for ureadahead (0.100.0-21) ...
+root@master:~/cicd_project# 
+
+root@master:~/cicd_project# service jenkins status
+● jenkins.service - LSB: Start Jenkins at boot time
+   Loaded: loaded (/etc/init.d/jenkins; generated)
+   Active: active (exited) since Wed 2021-04-14 07:04:02 UTC; 1min 38s ago
+     Docs: man:systemd-sysv-generator(8)
+    Tasks: 0 (limit: 4367)
+   CGroup: /system.slice/jenkins.service
+
+Apr 14 07:04:01 master systemd[1]: Starting LSB: Start Jenkins at boot time...
+Apr 14 07:04:01 master jenkins[8346]: Correct java version found
+Apr 14 07:04:01 master jenkins[8346]:  * Starting Jenkins Automation Server jenkins
+Apr 14 07:04:01 master su[8396]: Successful su for jenkins by root
+Apr 14 07:04:01 master su[8396]: + ??? root:jenkins
+Apr 14 07:04:01 master su[8396]: pam_unix(su:session): session opened for user jenkins by (uid=0)
+Apr 14 07:04:01 master su[8396]: pam_unix(su:session): session closed for user jenkins
+Apr 14 07:04:02 master jenkins[8346]:    ...done.
+Apr 14 07:04:02 master systemd[1]: Started LSB: Start Jenkins at boot time.
+root@master:~/cicd_project# 
+
+3. Install Maven
+----------------
+
+root@master:~/cicd_project# cd /tmp ; sudo wget http://apachemirror.wuchna.com/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+--2021-04-14 07:07:23--  http://apachemirror.wuchna.com/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+Resolving apachemirror.wuchna.com (apachemirror.wuchna.com)... 143.110.177.196
+Connecting to apachemirror.wuchna.com (apachemirror.wuchna.com)|143.110.177.196|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://apachemirror.wuchna.com/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz [following]
+--2021-04-14 07:07:24--  https://apachemirror.wuchna.com/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+Connecting to apachemirror.wuchna.com (apachemirror.wuchna.com)|143.110.177.196|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 9506321 (9.1M) [application/x-gzip]
+Saving to: ‘apache-maven-3.6.3-bin.tar.gz’
+
+apache-maven-3.6.3-bin.tar.gz                       100%[================================================================================================================>]   9.07M  4.01MB/s    in 2.3s    
+
+2021-04-14 07:07:27 (4.01 MB/s) - ‘apache-maven-3.6.3-bin.tar.gz’ saved [9506321/9506321]
+
+root@master:/tmp# 
+root@master:/tmp# ls -ltr
+total 12532
+-rw-r--r-- 1 root          root          9506321 Jul  3  2020 apache-maven-3.6.3-bin.tar.gz
+drwx------ 3 root          root             4096 Apr 14 06:31 systemd-private-d9ff98746c0c4124b10aec6e2be79011-systemd-resolved.service-tcOWXm
+drwx------ 3 root          root             4096 Apr 14 06:32 systemd-private-d9ff98746c0c4124b10aec6e2be79011-chrony.service-e8fpLL
+drwx------ 2 sanjeevpadaki sanjeevpadaki    4096 Apr 14 06:33 ssh-ZbU5Hy41Vx
+drwx------ 2 root          root             4096 Apr 14 06:39 tmpe3yw_8_b
+drwxr-xr-x 2 root          root             4096 Apr 14 07:04 hsperfdata_root
+drwxr-xr-x 2 jenkins       jenkins          4096 Apr 14 07:04 hsperfdata_jenkins
+-rw-r--r-- 1 jenkins       jenkins       3293397 Apr 14 07:04 winstone8815154023753762323.jar
+drwx------ 2 jenkins       jenkins          4096 Apr 14 07:04 jetty-0_0_0_0-8080-war-_-any-7511540190433352713
+root@master:/tmp# 
+
+root@master:/tmp# ls -ltr
+total 12532
+-rw-r--r-- 1 root          root          9506321 Jul  3  2020 apache-maven-3.6.3-bin.tar.gz
+drwx------ 3 root          root             4096 Apr 14 06:31 systemd-private-d9ff98746c0c4124b10aec6e2be79011-systemd-resolved.service-tcOWXm
+drwx------ 3 root          root             4096 Apr 14 06:32 systemd-private-d9ff98746c0c4124b10aec6e2be79011-chrony.service-e8fpLL
+drwx------ 2 sanjeevpadaki sanjeevpadaki    4096 Apr 14 06:33 ssh-ZbU5Hy41Vx
+drwx------ 2 root          root             4096 Apr 14 06:39 tmpe3yw_8_b
+drwxr-xr-x 2 root          root             4096 Apr 14 07:04 hsperfdata_root
+drwxr-xr-x 2 jenkins       jenkins          4096 Apr 14 07:04 hsperfdata_jenkins
+-rw-r--r-- 1 jenkins       jenkins       3293397 Apr 14 07:04 winstone8815154023753762323.jar
+drwx------ 2 jenkins       jenkins          4096 Apr 14 07:04 jetty-0_0_0_0-8080-war-_-any-7511540190433352713
+root@master:/tmp# 
+root@master:/tmp# 
+root@master:/tmp# ls -al /opt/
+total 8
+drwxr-xr-x  2 root root 4096 Apr 12 18:09 .
+drwxr-xr-x 23 root root 4096 Apr 14 06:32 ..
+root@master:/tmp# 
+root@master:/tmp# cd /tmp ; sudo tar -xzf apache-maven-3.6.3-bin.tar.gz -C /opt
+root@master:/tmp# ls -al /opt/
+total 12
+drwxr-xr-x  3 root root 4096 Apr 14 07:09 .
+drwxr-xr-x 23 root root 4096 Apr 14 06:32 ..
+drwxr-xr-x  6 root root 4096 Apr 14 07:09 apache-maven-3.6.3
+root@master:/tmp# 
+
+<<<<< Install/Upgrade Git if not done yet in the VM >>>>>>>
+
+root@master:/tmp# git --version
+git version 2.17.1
+root@master:/tmp# 
+root@master:/tmp# sudo apt-get install software-properties-common
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+software-properties-common is already the newest version (0.96.24.32.14).
+software-properties-common set to manually installed.
+The following package was automatically installed and is no longer required:
+  libnuma1
+Use 'sudo apt autoremove' to remove it.
+0 upgraded, 0 newly installed, 0 to remove and 3 not upgraded.
+root@master:/tmp# 
+root@master:/tmp# sudo add-apt-repository ppa:git-core/ppa -y
+Hit:1 http://us-central1.gce.archive.ubuntu.com/ubuntu bionic InRelease
+Hit:2 http://us-central1.gce.archive.ubuntu.com/ubuntu bionic-updates InRelease                       
+Hit:3 http://us-central1.gce.archive.ubuntu.com/ubuntu bionic-backports InRelease                     
+Hit:4 http://security.ubuntu.com/ubuntu bionic-security InRelease                                                               
+Ign:5 https://pkg.jenkins.io/debian-stable binary/ InRelease                                                                    
+Hit:6 https://pkg.jenkins.io/debian-stable binary/ Release                                                                   
+Get:7 http://ppa.launchpad.net/git-core/ppa/ubuntu bionic InRelease [20.8 kB]
+Hit:9 http://ppa.launchpad.net/openjdk-r/ppa/ubuntu bionic InRelease          
+Get:10 http://ppa.launchpad.net/git-core/ppa/ubuntu bionic/main amd64 Packages [3044 B]
+Get:11 http://ppa.launchpad.net/git-core/ppa/ubuntu bionic/main Translation-en [2252 B]
+Fetched 26.0 kB in 1s (25.3 kB/s)                   
+Reading package lists... Done
+root@master:/tmp# 
+
+
+root@master:/tmp# sudo apt-get update
+Hit:1 http://us-central1.gce.archive.ubuntu.com/ubuntu bionic InRelease
+Hit:2 http://us-central1.gce.archive.ubuntu.com/ubuntu bionic-updates InRelease                                                                      
+Hit:3 http://us-central1.gce.archive.ubuntu.com/ubuntu bionic-backports InRelease                                                                    
+Ign:4 https://pkg.jenkins.io/debian-stable binary/ InRelease                                                                                                                  
+Hit:5 http://security.ubuntu.com/ubuntu bionic-security InRelease                                                                                                             
+Hit:6 https://pkg.jenkins.io/debian-stable binary/ Release                                         
+Hit:7 http://ppa.launchpad.net/git-core/ppa/ubuntu bionic InRelease                                
+Hit:8 http://ppa.launchpad.net/openjdk-r/ppa/ubuntu bionic InRelease          
+Reading package lists... Done                     
+root@master:/tmp# 
+root@master:/tmp# 
+root@master:/tmp# 
+root@master:/tmp# sudo apt-get install git -y
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following package was automatically installed and is no longer required:
+  libnuma1
+Use 'sudo apt autoremove' to remove it.
+The following additional packages will be installed:
+  git-man libpcre2-8-0
+Suggested packages:
+  git-daemon-run | git-daemon-sysvinit git-doc git-el git-email git-gui gitk gitweb git-cvs git-mediawiki git-svn
+The following NEW packages will be installed:
+  libpcre2-8-0
+The following packages will be upgraded:
+  git git-man
+2 upgraded, 1 newly installed, 0 to remove and 3 not upgraded.
+Need to get 7467 kB of archives.
+After this operation, 4496 kB of additional disk space will be used.
+Get:1 http://us-central1.gce.archive.ubuntu.com/ubuntu bionic/universe amd64 libpcre2-8-0 amd64 10.31-2 [179 kB]
+Get:2 http://ppa.launchpad.net/git-core/ppa/ubuntu bionic/main amd64 git amd64 1:2.31.1-0ppa1~ubuntu18.04.1 [5441 kB]
+Get:3 http://ppa.launchpad.net/git-core/ppa/ubuntu bionic/main amd64 git-man all 1:2.31.1-0ppa1~ubuntu18.04.1 [1847 kB]
+Fetched 7467 kB in 2s (3293 kB/s) 
+(Reading database ... 81605 files and directories currently installed.)
+Preparing to unpack .../git_1%3a2.31.1-0ppa1~ubuntu18.04.1_amd64.deb ...
+Unpacking git (1:2.31.1-0ppa1~ubuntu18.04.1) over (1:2.17.1-1ubuntu0.8) ...
+Preparing to unpack .../git-man_1%3a2.31.1-0ppa1~ubuntu18.04.1_all.deb ...
+Unpacking git-man (1:2.31.1-0ppa1~ubuntu18.04.1) over (1:2.17.1-1ubuntu0.8) ...
+Selecting previously unselected package libpcre2-8-0:amd64.
+Preparing to unpack .../libpcre2-8-0_10.31-2_amd64.deb ...
+Unpacking libpcre2-8-0:amd64 (10.31-2) ...
+Setting up git-man (1:2.31.1-0ppa1~ubuntu18.04.1) ...
+Setting up libpcre2-8-0:amd64 (10.31-2) ...
+Setting up git (1:2.31.1-0ppa1~ubuntu18.04.1) ...
+Processing triggers for man-db (2.8.3-2ubuntu0.1) ...
+Processing triggers for libc-bin (2.27-3ubuntu1.4) ...
+root@master:/tmp# 
+
+root@master:/tmp# git --version
+git version 2.31.1
+root@master:/tmp# 
+
+<<<<< Verify the installations >>>>>
+
+root@master:/tmp# git --version
+git version 2.31.1
+root@master:/tmp# 
+root@master:/tmp# 
+
+root@master:/tmp# java -version
+openjdk version "1.8.0_282"
+OpenJDK Runtime Environment (build 1.8.0_282-8u282-b08-0ubuntu1~18.04-b08)
+OpenJDK 64-Bit Server VM (build 25.282-b08, mixed mode)
+root@master:/tmp# 
+root@master:/tmp# 
+
+root@master:/tmp# /opt/apache-maven-3.6.3/bin/mvn --version
+Apache Maven 3.6.3 (cecedd343002696d0abb50b32b541b8a6ba2883f)
+Maven home: /opt/apache-maven-3.6.3
+Java version: 1.8.0_282, vendor: Private Build, runtime: /usr/lib/jvm/java-8-openjdk-amd64/jre
+Default locale: en, platform encoding: UTF-8
+OS name: "linux", version: "5.4.0-1041-gcp", arch: "amd64", family: "unix"
+root@master:/tmp# 
+
+root@master:/tmp# <<<<<<< Jenkins is a process. Therefore use ps to check if Jenkins is running or not. As you see Jenkins is daemonised, so you may check the service status >>>>>>>>
+root@master:/tmp# ps -ef|grep jenkins
+jenkins   8397     1  0 07:04 ?        00:00:00 /lib/systemd/systemd --user
+jenkins   8398  8397  0 07:04 ?        00:00:00 (sd-pam)
+jenkins   8415     1  0 07:04 ?        00:00:00 /usr/bin/daemon --name=jenkins --inherit --env=JENKINS_HOME=/var/lib/jenkins --output=/var/log/jenkins/jenkins.log --pidfile=/var/run/jenkins/jenkins.pid -- /usr/bin/java -Djava.awt.headless=true -jar /usr/share/jenkins/jenkins.war --webroot=/var/cache/jenkins/war --httpPort=8080
+jenkins   8416  8415  3 07:04 ?        00:00:27 /usr/bin/java -Djava.awt.headless=true -jar /usr/share/jenkins/jenkins.war --webroot=/var/cache/jenkins/war --httpPort=8080
+root     11225  1698  0 07:17 pts/0    00:00:00 grep --color=auto jenkins
+root@master:/tmp# 
+
+root@master:/tmp# service jenkins status
+● jenkins.service - LSB: Start Jenkins at boot time
+   Loaded: loaded (/etc/init.d/jenkins; generated)
+   Active: active (exited) since Wed 2021-04-14 07:04:02 UTC; 18min ago
+     Docs: man:systemd-sysv-generator(8)
+    Tasks: 0 (limit: 4367)
+   CGroup: /system.slice/jenkins.service
+
+Apr 14 07:04:01 master systemd[1]: Starting LSB: Start Jenkins at boot time...
+Apr 14 07:04:01 master jenkins[8346]: Correct java version found
+Apr 14 07:04:01 master jenkins[8346]:  * Starting Jenkins Automation Server jenkins
+Apr 14 07:04:01 master su[8396]: Successful su for jenkins by root
+Apr 14 07:04:01 master su[8396]: + ??? root:jenkins
+Apr 14 07:04:01 master su[8396]: pam_unix(su:session): session opened for user jenkins by (uid=0)
+Apr 14 07:04:01 master su[8396]: pam_unix(su:session): session closed for user jenkins
+Apr 14 07:04:02 master jenkins[8346]:    ...done.
+Apr 14 07:04:02 master systemd[1]: Started LSB: Start Jenkins at boot time.
+root@master:/tmp# 
+
+Question: How do you access a process running in a VM from a browser?
+Answer: Using IP + Port
+
+Use External IP + Port as seen above is 8080
+
+Current Ext IP as seen in GCP of this VM is 35.202.188.5:8080  
+Enter the IP + Port in a browser 	(Snapshot copied in installation_snapshot_14042021.doc)
+
+Password as mentioned in the browser:
+root@master:/tmp# cat /var/lib/jenkins/secrets/initialAdminPassword 
+e6f0e44a08994e1e8225534f75421555
+root@master:/tmp# 
+
+- Select Install suggested pluggins from the webpage
+
+- After the pluggins are installed enter the credentials:
+Username: admin
+Password: admin
+
+- After entering the credentials save and continue, to see pic 4)Instance configuration, where the external IP has to be replaced by the internal IP of the VM.
+
+- After this the default page is seen as in pic 5)
+
+Jenkins Gui:
+------------
+Global configurations where different tools can be configured here:
+
+Manage Jenkins -> Global Tool Configurations -> JDK -> Add JDK
+	- uncheck Install automatically (as we have installed java manually)
+	- enter: 
+		name: java1.8
+		java_home: /usr/lib/jvm/java-8-openjdk-amd64/   (based on the location seen below)
+		
+			root@master:/tmp# cd /usr/lib/jvm/java-8-openjdk-amd64/
+			root@master:/usr/lib/jvm/java-8-openjdk-amd64# pwd
+			/usr/lib/jvm/java-8-openjdk-amd64
+			root@master:/usr/lib/jvm/java-8-openjdk-amd64# 
+
+	- Git: no modification. Default values used.
+	- Maven:
+		name: maven3.6.3
+		maven_home: /opt/apache-maven-3.6.3				(based on the location seen below)
+
+			root@master:/tmp# /opt/apache-maven-3.6.3/bin/mvn --version
+			Apache Maven 3.6.3 (cecedd343002696d0abb50b32b541b8a6ba2883f)
+			Maven home: /opt/apache-maven-3.6.3
+
+Start developing an automation in Jenkins: Start building your software project : Refer to 10) in Installation_snapshot_14042021.doc
+-------------------------------------------------------------------------------
+Location where Jenkins clones the repository: /var/lib/jenkins/workspace/package
+Location where Jenkins stores the build package: /var/lib/jenkins/workspace/package/target
+
+How Maven gets the source code and builds it?
+---------------------------------------------
+Maven is a build tool. A dependency management tool.
+When developer decides to use Maven for build, he has to follow some Maven specific project build standards. This is to be captured in pom.xml (Project Object Model)
+Maven reads pom.xml to build the package. 
+Pom.xml contains: 
+	- project packaging type
+	- dependencies
+    - plugins E.g: JUnit, CodeCoverage: Cobertura, CodeReview: PMD (Program Mistake Detector) which are not the default functionalites of Maven. So gets the plugin.
+	
+
+Continuous Integration pipeline: Code Review -> Code Coverage -> Unit testing -> Build Package
+----------------------------------------------------------------------------------------------
+
+Creating Code Review Job in Jenkins:
+------------------------------------
+
+	
