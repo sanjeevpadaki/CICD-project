@@ -1,0 +1,155 @@
+Class 8 recording: 52.07
+
+
+myplaybook.yaml (100% of keys are predefined, few values also are predefined) (Play1: line number 4 till 14: list of tasks against a set of servers in hosts is a play)
+
+- name: PLAY1
+  hosts: qa   #group name from inventory file
+  tasks:
+    - name: task1
+	  copy: 
+	    src: /tmp/now.txt   # source is always ansible controller machine
+		dest: /tmp
+		mode: '0777'
+	- name: task2
+	  file:
+	    path: /tmp/today
+		state: directory
+- name: PLAY2
+  hosts: qa   #group name from inventory file
+  tasks:
+    - name: task1
+	  copy: 
+	    src: /tmp/now.txt   # source is always ansible controller machine
+		dest: /tmp
+		mode: '0777'
+	- name: task2
+	  file:
+	    path: /tmp/today
+		state: directory
+		
+		
+
+root@ansible-controller:/home/devops# ansible-playbook -i myinv myplaybook.yaml -u devops -k
+SSH password: 
+ERROR! We were unable to read either as JSON nor YAML, these are the errors we got from each:
+JSON: No JSON object could be decoded
+Syntax Error while loading YAML.
+  found a tab character that violate intendation
+The error appears to be in '/home/devops/myplaybook.yaml': line 6, column 1, but may
+be elsewhere in the file depending on the exact syntax problem.
+The offending line appears to be:
+    - name: task1
+          copy:
+^ here
+There appears to be a tab character at the start of the line.
+YAML does not use tabs for formatting. Tabs should be replaced with spaces.
+For example:
+    - name: update tooling
+      vars:
+        version: 1.2.3
+#    ^--- there is a tab there.
+Should be written as:
+    - name: update tooling
+      vars:
+        version: 1.2.3
+# ^--- all spaces here.
+root@ansible-controller:/home/devops# 
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+After running tomcat.yml playbook in controller
+-----------------------------------------------
+
+root@ansible-controller:/home/devops# ansible-playbook -i /home/devops/myinv -u devops -k tomcat.yml 
+SSH password: 
+PLAY [qa] **********************************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] *********************************************************************************************************************************************************************************
+ok: [10.128.0.7]
+ok: [10.128.0.8]
+
+TASK [Install Java 1.8] ********************************************************************************************************************************************************************************
+changed: [10.128.0.7]
+changed: [10.128.0.8]
+
+TASK [add group "tomcat"] ******************************************************************************************************************************************************************************
+changed: [10.128.0.7]
+changed: [10.128.0.8]
+
+TASK [add user "tomcat"] *******************************************************************************************************************************************************************************
+changed: [10.128.0.7]
+changed: [10.128.0.8]
+
+TASK [Download Tomcat] *********************************************************************************************************************************************************************************
+changed: [10.128.0.8]
+changed: [10.128.0.7]
+
+TASK [Extract archive] *********************************************************************************************************************************************************************************
+changed: [10.128.0.7]
+changed: [10.128.0.8]
+
+TASK [create symlink] **********************************************************************************************************************************************************************************
+changed: [10.128.0.7]
+changed: [10.128.0.8]
+
+TASK [Change ownership of Tomcat installation] *********************************************************************************************************************************************************
+changed: [10.128.0.7]
+changed: [10.128.0.8]
+
+TASK [create tomcat.service file] **********************************************************************************************************************************************************************
+changed: [10.128.0.7]
+changed: [10.128.0.8]
+
+TASK [create tomcat service] ***************************************************************************************************************************************************************************
+changed: [10.128.0.7]
+changed: [10.128.0.8]
+
+TASK [enable & start tomcat service] *******************************************************************************************************************************************************************
+changed: [10.128.0.7]
+changed: [10.128.0.8]
+TASK [validate tomcat is running] **********************************************************************************************************************************************************************
+[WARNING]: Consider using the service module rather than running 'service'.  If you need to use command because service is insufficient you can add 'warn: false' to this command task or set
+'command_warnings=False' in ansible.cfg to get rid of this message.
+changed: [10.128.0.7]
+changed: [10.128.0.8]
+TASK [debug] *******************************************************************************************************************************************************************************************
+ok: [10.128.0.7] => {
+    "tstatus.stdout_lines": [
+        "● tomcat.service - Tomcat - instance ", 
+        "   Loaded: loaded (/etc/systemd/system/tomcat.service; enabled; vendor preset: enabled)", 
+        "   Active: active (running) since Wed 2021-04-21 20:56:47 UTC; 881ms ago", 
+        "  Process: 10167 ExecStart=/opt/tomcat/bin/startup.sh (code=exited, status=0/SUCCESS)", 
+        " Main PID: 10183 (java)", 
+        "    Tasks: 11 (limit: 4367)", 
+        "   CGroup: /system.slice/tomcat.service", 
+        "           └─10183 /usr/bin/java -Djava.util.logging.config.file=/opt/tomcat//conf/logging.properties -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djdk.tls.ephemeralDHKe
+ySize=2048 -Djava.protocol.handler.pkgs=org.apache.catalina.webresources -Dorg.apache.catalina.security.SecurityListener.UMASK=0027 -Dignore.endorsed.dirs= -classpath /opt/tomcat//bin/bootstrap.jar:/o
+pt/tomcat//bin/tomcat-juli.jar -Dcatalina.base=/opt/tomcat/ -Dcatalina.home=/opt/tomcat/ -Djava.io.tmpdir=/opt/tomcat//temp org.apache.catalina.startup.Bootstrap start", 
+        "", 
+        "Apr 21 20:56:47 rnode1-ansible systemd[1]: Starting Tomcat - instance ...", 
+        "Apr 21 20:56:47 rnode1-ansible startup.sh[10167]: Tomcat started.", 
+        "Apr 21 20:56:47 rnode1-ansible systemd[1]: Started Tomcat - instance ."
+    ]
+}
+ok: [10.128.0.8] => {
+    "tstatus.stdout_lines": [
+        "● tomcat.service - Tomcat - instance ", 
+        "   Loaded: loaded (/etc/systemd/system/tomcat.service; enabled; vendor preset: enabled)", 
+        "   Active: active (running) since Wed 2021-04-21 20:56:47 UTC; 883ms ago", 
+        "  Process: 10248 ExecStart=/opt/tomcat/bin/startup.sh (code=exited, status=0/SUCCESS)", 
+        " Main PID: 10266 (java)", 
+        "    Tasks: 11 (limit: 4367)", 
+        "   CGroup: /system.slice/tomcat.service", 
+        "           └─10266 /usr/bin/java -Djava.util.logging.config.file=/opt/tomcat//conf/logging.properties -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djdk.tls.ephemeralDHKe
+ySize=2048 -Djava.protocol.handler.pkgs=org.apache.catalina.webresources -Dorg.apache.catalina.security.SecurityListener.UMASK=0027 -Dignore.endorsed.dirs= -classpath /opt/tomcat//bin/bootstrap.jar:/o
+pt/tomcat//bin/tomcat-juli.jar -Dcatalina.base=/opt/tomcat/ -Dcatalina.home=/opt/tomcat/ -Djava.io.tmpdir=/opt/tomcat//temp org.apache.catalina.startup.Bootstrap start", 
+        "", 
+        "Apr 21 20:56:47 rnode2-ansible systemd[1]: Starting Tomcat - instance ...", 
+        "Apr 21 20:56:47 rnode2-ansible startup.sh[10248]: Tomcat started.", 
+        "Apr 21 20:56:47 rnode2-ansible systemd[1]: Started Tomcat - instance ."
+    ]
+}
+PLAY RECAP *********************************************************************************************************************************************************************************************
+10.128.0.7                 : ok=13   changed=11   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+10.128.0.8                 : ok=13   changed=11   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+root@ansible-controller:/home/devops#
